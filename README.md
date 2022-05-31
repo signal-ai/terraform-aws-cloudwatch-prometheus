@@ -1,5 +1,22 @@
 # terraform-aws-cloudwatch-prometheus
 
+Are you fed up with the costs, faf and effort of maintaining cloudwatch exporters to get metrics into your prometheus setup?
+Maybe you are using one of the following:
+
+- [Official Cloudwatch Prometheus Exporter](https://github.com/prometheus/cloudwatch_exporter)
+- [YACE - Yet Another Prometheus Exporter](https://github.com/nerdswords/yet-another-cloudwatch-exporter)
+
+These are expensive and costly in terms of number of API calls no matter how you look at it.
+
+Thankfully AWS released [Cloudwatch Metric Steams](https://aws.amazon.com/blogs/aws/cloudwatch-metric-streams-send-aws-metrics-to-partners-and-to-your-apps-in-real-time/) to connect to metrics partners like [Datadog](https://www.datadoghq.com/) or [New Relic](https://newrelic.com/).
+
+This is a terraform module that does the same thing but connects to one of your prometheus remote write endpoints directly.
+
+## Features
+
+- Lighting fast, efficient metrics that you want directly in prometheus.
+- Standardized prometheus  `__naming__` in `snake_case`
+
 ![System Architecture](./images/system_architecture.png)
 
 <!-- BEGIN_TF_DOCS -->
@@ -42,3 +59,6 @@
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | The subnet ids the create the lambda in (these should have network access to the prometheus remote write endpoints) | `list(string)` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The VPC to create the lambda in (this should have network access to the prometheusremote write endpoints) | `string` | n/a | yes |
 <!-- END_TF_DOCS -->
+
+## Thank you
+[AWS Recipe](https://aws-observability.github.io/aws-o11y-recipes/recipes/lambda-cw-metrics-go-amp/) - This draws heavily on this (using a modified version of the go code in their [lambda](https://github.com/aws-observability/aws-o11y-recipes/tree/main/sandbox/CWMetricStreamExporter/lambda))
