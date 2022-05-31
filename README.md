@@ -18,6 +18,8 @@ This is a terraform module that does the same thing but connects to one of your 
 - Standardized prometheus  `__naming__` in `snake_case`
 - Currently supporting `lambda` and `sqs` (More coming soon)
 
+## System Architecture
+
 ![System Architecture](./images/system_architecture.png)
 
 <!-- BEGIN_TF_DOCS -->
