@@ -18,9 +18,6 @@ resource "aws_lambda_function" "cloudwatch_metrics_firehose_prometheus_remote_wr
       PROMETHEUS_REMOTE_WRITE_URLS = join(",", var.prometheus_endpoints)
     }
   }
-  depends_on = [
-    data.archive_file.build_code
-  ]
 }
 
 resource "aws_security_group" "cloudwatch_metrics_firehose_prometheus_remote_write" {
