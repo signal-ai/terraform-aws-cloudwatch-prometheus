@@ -4,7 +4,7 @@ variable "vpc_id" {
 }
 
 variable "subnet_ids" {
-  type        = string
+  type        = list(string)
   description = "The subnet ids the create the lambda in (these should have network access to the prometheus remote write endpoints)"
 
 }
