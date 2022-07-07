@@ -5,6 +5,7 @@ resource "aws_lambda_function" "cloudwatch_metrics_firehose_prometheus_remote_wr
   role             = aws_iam_role.iam_for_lambda.arn
   handler          = "main"
   timeout          = 60
+  memory_size      = 256
 
   runtime = "go1.x"
 
