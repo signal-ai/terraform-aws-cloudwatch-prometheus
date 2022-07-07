@@ -1,5 +1,6 @@
 resource "aws_lambda_function" "cloudwatch_metrics_firehose_prometheus_remote_write" {
   filename         = "${path.module}/lambda_code/payload.zip"
+  source_code_hash = filebase64sha256("${path.module}/lambda_code/payload.zip")
   function_name    = var.aws_firehose_lambda_name
   role             = aws_iam_role.iam_for_lambda.arn
   handler          = "main"
