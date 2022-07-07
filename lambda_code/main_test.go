@@ -10,7 +10,7 @@ type sanitizeTest struct {
 }
 
 var dimensions = map[string]string{
-	"QueueName":    "foo",
+	"QueueName":    "asdasd-asd",
 	"FunctionName": "bar",
 }
 

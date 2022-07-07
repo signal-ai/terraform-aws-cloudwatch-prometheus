@@ -186,7 +186,7 @@ func createDimensionLabels(dimensions Dimensions) []*prompb.Label {
 		if value != "" {
 			dimensionLabel := &prompb.Label{
 				Name:  sanitize(toSnakeCase(key)),
-				Value: sanitize(value),
+				Value: value,
 			}
 			labels = append(labels, dimensionLabel)
 		}
