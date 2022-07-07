@@ -13,6 +13,25 @@ resource "aws_cloudwatch_metric_stream" "main" {
     namespace = "AWS/Lambda"
   }
 
+  include_filter {
+    namespace = "AWS/Elasticache"
+  }
+
+  include_filter {
+    namespace = "AWS/Redshift"
+  }
+
+  include_filter {
+    namespace = "AWS/ES"
+  }
+
+  include_filter {
+    namespace = "AWS/ES"
+  }
+  include_filter {
+    namespace = "AWS/Redshift"
+  }
+
 }
 
 resource "aws_iam_role" "metric_stream_to_firehose" {

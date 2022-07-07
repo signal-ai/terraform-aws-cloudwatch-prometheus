@@ -21,23 +21,15 @@ import (
 )
 
 type MetricStreamData struct {
-	MetricStreamName string     `json:"metric_stream_name"`
-	AccountID        string     `json:"account_id"`
-	Region           string     `json:"region"`
-	Namespace        string     `json:"namespace"`
-	MetricName       string     `json:"metric_name"`
-	Dimensions       Dimensions `json:"dimensions"`
-	Timestamp        int64      `json:"timestamp"`
-	Value            Value      `json:"value"`
-	Unit             string     `json:"unit"`
-}
-type Dimensions struct {
-	Class        string `json:"Class"`
-	Resource     string `json:"Resource"`
-	Service      string `json:"Service"`
-	Type         string `json:"Type"`
-	QueueName    string `json:"QueueName"`
-	FunctionName string `json:"FunctionName"`
+	MetricStreamName string            `json:"metric_stream_name"`
+	AccountID        string            `json:"account_id"`
+	Region           string            `json:"region"`
+	Namespace        string            `json:"namespace"`
+	MetricName       string            `json:"metric_name"`
+	Dimensions       map[string]string `json:"dimensions"`
+	Timestamp        int64             `json:"timestamp"`
+	Value            Value             `json:"value"`
+	Unit             string            `json:"unit"`
 }
 
 type Value struct {
@@ -137,7 +129,7 @@ func toSnakeCase(str string) string {
 	return strings.ToLower(snake)
 }
 
-func handleAddLabels(valueType Values, metricName string, namespace string, dimensions Dimensions, region string, account string) []*prompb.Label {
+func handleAddLabels(valueType Values, metricName string, namespace string, dimensions map[string]string, region string, account string) []*prompb.Label {
 
 	var labels []*prompb.Label
 
@@ -183,56 +175,19 @@ func createMetricNameLabels(metricName string, namespace string, valueType Value
 	return labels
 }
 
-func createDimensionLabels(dimensions Dimensions) []*prompb.Label {
+func createDimensionLabels(dimensions map[string]string) []*prompb.Label {
 	var labels []*prompb.Label
 
-	// Checks to see if the class / resource / service / type exists, if so creates a label for the dimension.
-	if dimensions.Class != "" {
-		classLabel := &prompb.Label{
-			Name:  "class",
-			Value: sanitize(dimensions.Class),
+	// for all dimensions in dimensions map, create a label with the dimension name and value
+	// if element is not "" then create a label with the dimension name and value
+	for key, value := range dimensions {
+		if value != "" {
+			dimensionLabel := &prompb.Label{
+				Name:  sanitize(toSnakeCase(key)),
+				Value: sanitize(value),
+			}
+			labels = append(labels, dimensionLabel)
 		}
-		labels = append(labels, classLabel)
-	}
-
-	if dimensions.Resource != "" {
-		resourceLabel := &prompb.Label{
-			Name:  "resource",
-			Value: sanitize(dimensions.Resource),
-		}
-		labels = append(labels, resourceLabel)
-	}
-
-	if dimensions.Service != "" {
-		serviceLabel := &prompb.Label{
-			Name:  "service",
-			Value: sanitize(dimensions.Service),
-		}
-		labels = append(labels, serviceLabel)
-	}
-
-	if dimensions.Type != "" {
-		typeLabel := &prompb.Label{
-			Name:  "type",
-			Value: sanitize(dimensions.Type),
-		}
-		labels = append(labels, typeLabel)
-	}
-
-	if dimensions.QueueName != "" {
-		nameLabel := &prompb.Label{
-			Name:  "name",
-			Value: dimensions.QueueName,
-		}
-		labels = append(labels, nameLabel)
-	}
-
-	if dimensions.FunctionName != "" {
-		nameLabel := &prompb.Label{
-			Name:  "name",
-			Value: sanitize(dimensions.FunctionName),
-		}
-		labels = append(labels, nameLabel)
 	}
 
 	return labels

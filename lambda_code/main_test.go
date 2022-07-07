@@ -69,27 +69,3 @@ func TestCreateSamples(t *testing.T) {
 		}
 	}
 }
-
-var noDimensions = &Dimensions{}
-var someDimensions = &Dimensions{Class: "Amazon", QueueName: "test-queue"}
-var allDimensions = &Dimensions{Class: "AWS", Resource: "Lambda", Service: "Data Firehose Transformation", Type: "Type 2"}
-
-type DimensionLabelTest struct {
-	dimensions           Dimensions
-	expectedOutputLength int
-}
-
-var dimensionLabelsTest = []DimensionLabelTest{
-	DimensionLabelTest{*noDimensions, 0},
-	DimensionLabelTest{*someDimensions, 2},
-	DimensionLabelTest{*allDimensions, 4},
-}
-
-func TestCreateDimensionsLabel(t *testing.T) {
-	for _, test := range dimensionLabelsTest {
-		output := createDimensionLabels(test.dimensions)
-		if len(output) != test.expectedOutputLength {
-			t.Errorf("Incorrect length for the dimensions")
-		}
-	}
-}
