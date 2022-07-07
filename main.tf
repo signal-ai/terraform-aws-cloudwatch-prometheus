@@ -14,7 +14,7 @@ resource "aws_cloudwatch_metric_stream" "main" {
   }
 
   include_filter {
-    namespace = "AWS/Elasticache"
+    namespace = "AWS/ElastiCache"
   }
 
   include_filter {
