@@ -20,16 +20,18 @@ import (
 	"github.com/prometheus/prometheus/prompb"
 )
 
+type Dimensions = map[string]string
+
 type MetricStreamData struct {
-	MetricStreamName string            `json:"metric_stream_name"`
-	AccountID        string            `json:"account_id"`
-	Region           string            `json:"region"`
-	Namespace        string            `json:"namespace"`
-	MetricName       string            `json:"metric_name"`
-	Dimensions       map[string]string `json:"dimensions"`
-	Timestamp        int64             `json:"timestamp"`
-	Value            Value             `json:"value"`
-	Unit             string            `json:"unit"`
+	MetricStreamName string     `json:"metric_stream_name"`
+	AccountID        string     `json:"account_id"`
+	Region           string     `json:"region"`
+	Namespace        string     `json:"namespace"`
+	MetricName       string     `json:"metric_name"`
+	Dimensions       Dimensions `json:"dimensions"`
+	Timestamp        int64      `json:"timestamp"`
+	Value            Value      `json:"value"`
+	Unit             string     `json:"unit"`
 }
 
 type Value struct {
@@ -129,7 +131,7 @@ func toSnakeCase(str string) string {
 	return strings.ToLower(snake)
 }
 
-func handleAddLabels(valueType Values, metricName string, namespace string, dimensions map[string]string, region string, account string) []*prompb.Label {
+func handleAddLabels(valueType Values, metricName string, namespace string, dimensions Dimensions, region string, account string) []*prompb.Label {
 
 	var labels []*prompb.Label
 
@@ -175,7 +177,7 @@ func createMetricNameLabels(metricName string, namespace string, valueType Value
 	return labels
 }
 
-func createDimensionLabels(dimensions map[string]string) []*prompb.Label {
+func createDimensionLabels(dimensions Dimensions) []*prompb.Label {
 	var labels []*prompb.Label
 
 	// for all dimensions in dimensions map, create a label with the dimension name and value
