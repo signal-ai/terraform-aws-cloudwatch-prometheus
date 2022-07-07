@@ -36,6 +36,10 @@ resource "aws_cloudwatch_metric_stream" "main" {
     namespace = "AWS/Kinesis"
   }
 
+  include_filter {
+    namespace = "AWS/S3"
+  }
+
 }
 
 resource "aws_iam_role" "metric_stream_to_firehose" {
