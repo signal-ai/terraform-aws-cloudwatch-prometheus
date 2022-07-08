@@ -163,8 +163,8 @@ func handleAddSamples(valueType Values, value Value, timestamp int64) prompb.Sam
 
 func createMetricNameLabels(metricName string, namespace string, valueType Values, region string, account string) []*prompb.Label {
 	var labels []*prompb.Label
-	if !strings.HasPrefix(metricName, "AWS/") {
-		metricName = "aws_custom_" + metricName
+	if !strings.HasPrefix(namespace, "AWS/") {
+		metricName = "aws_custom_" + namespace
 	}
 	metricNameLabel := &prompb.Label{
 		Name:  "__name__",
