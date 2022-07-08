@@ -5,38 +5,13 @@ resource "aws_cloudwatch_metric_stream" "main" {
   firehose_arn  = aws_kinesis_firehose_delivery_stream.cloudwatch_metrics_firehose_delivery_stream.arn
   output_format = "json"
 
-  include_filter {
-    namespace = "AWS/SQS"
-  }
 
-  include_filter {
-    namespace = "AWS/Lambda"
+  dynamic "include_filter" {
+    for_each = var.included_aws_namespaces
+    content {
+      namespace = include_filter.value
+    }
   }
-
-  include_filter {
-    namespace = "AWS/ElastiCache"
-  }
-
-  include_filter {
-    namespace = "AWS/Redshift"
-  }
-
-  include_filter {
-    namespace = "AWS/ES"
-  }
-
-  include_filter {
-    namespace = "AWS/Redshift"
-  }
-
-  include_filter {
-    namespace = "AWS/Kinesis"
-  }
-
-  include_filter {
-    namespace = "AWS/S3"
-  }
-
 }
 
 resource "aws_iam_role" "metric_stream_to_firehose" {
