@@ -161,7 +161,7 @@ func createMetricNameLabels(metricName string, namespace string, valueType Value
 	var labels []*prompb.Label
 	metricNameLabel := &prompb.Label{
 		Name:  "__name__",
-		Value: strings.ToLower(sanitize(namespace) + "_" + sanitize(toSnakeCase(metricName)) + "_" + sanitize(string(valueType))),
+		Value: "cloudwatch_" + strings.ToLower(sanitize(namespace)+"_"+sanitize(toSnakeCase(metricName))+"_"+sanitize(string(valueType))),
 	}
 	labels = append(labels, metricNameLabel)
 	regionLabel := &prompb.Label{
