@@ -51,17 +51,15 @@ const (
 )
 
 func HandleRequest(ctx context.Context, evnt events.KinesisFirehoseEvent) (events.KinesisFirehoseResponse, error) {
-
 	var response events.KinesisFirehoseResponse
 	var timeSeries []*prompb.TimeSeries
 	// These are the 4 value types from Cloudwatch, each of which map to a Prometheus Gauge
 	values := []Values{Count, Max, Min, Sum}
 
 	for _, record := range evnt.Records {
-
 		splitRecord := strings.Split(string(record.Data), string('\n'))
-		for _, x := range splitRecord {
 
+		for _, x := range splitRecord {
 			// The Records includes an empty new line at the last position which becomes "" after parsing. Skipping over the empty string.
 			if x == "" {
 				continue
@@ -128,33 +126,39 @@ func toSnakeCase(str string) string {
 	var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
 	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
 	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
+
 	return strings.ToLower(snake)
 }
 
 func handleAddLabels(valueType Values, metricName string, namespace string, dimensions Dimensions, region string, account string) []*prompb.Label {
-
 	var labels []*prompb.Label
 
 	metricNameLabels := createMetricNameLabels(metricName, namespace, valueType, region, account)
 	dimensionLabels := createDimensionLabels(dimensions)
 	labels = append(labels, dimensionLabels...)
 	labels = append(labels, metricNameLabels...)
+
 	return labels
 }
 
 func handleAddSamples(valueType Values, value Value, timestamp int64) prompb.Sample {
-	var sample prompb.Sample
+	var val float64
+
 	switch valueType {
 	case Count:
-		sample = createCountSample(value, timestamp)
+		val = value.Count
 	case Min:
-		sample = createMinSample(value, timestamp)
+		val = value.Min
 	case Max:
-		sample = createMaxSample(value, timestamp)
+		val = value.Max
 	case Sum:
-		sample = createSumSample(value, timestamp)
+		val = value.Sum
 	}
-	return sample
+
+	return prompb.Sample{
+		Value:     val,
+		Timestamp: timestamp,
+	}
 }
 
 func createMetricNameLabels(metricName string, namespace string, valueType Values, region string, account string) []*prompb.Label {
@@ -174,6 +178,7 @@ func createMetricNameLabels(metricName string, namespace string, valueType Value
 		Value: sanitize(account),
 	}
 	labels = append(labels, accountLabel)
+
 	return labels
 }
 
@@ -195,38 +200,6 @@ func createDimensionLabels(dimensions Dimensions) []*prompb.Label {
 	return labels
 }
 
-func createSumSample(value Value, timestamp int64) prompb.Sample {
-	sumSample := prompb.Sample{
-		Value:     value.Sum,
-		Timestamp: timestamp,
-	}
-	return sumSample
-}
-
-func createCountSample(value Value, timestamp int64) prompb.Sample {
-	countSample := prompb.Sample{
-		Value:     value.Count,
-		Timestamp: timestamp,
-	}
-	return countSample
-}
-
-func createMaxSample(value Value, timestamp int64) prompb.Sample {
-	maxSample := prompb.Sample{
-		Value:     value.Max,
-		Timestamp: timestamp,
-	}
-	return maxSample
-}
-
-func createMinSample(value Value, timestamp int64) prompb.Sample {
-	minSample := prompb.Sample{
-		Value:     value.Min,
-		Timestamp: timestamp,
-	}
-	return minSample
-}
-
 func createWriteRequestAndSendToAPS(timeseries []*prompb.TimeSeries) error {
 	writeRequest := &prompb.WriteRequest{
 		Timeseries: timeseries,
@@ -234,6 +207,7 @@ func createWriteRequestAndSendToAPS(timeseries []*prompb.TimeSeries) error {
 
 	body := encodeWriteRequestIntoProtoAndSnappy(writeRequest)
 	err := sendRequestToAPS(body)
+
 	return err
 }
 
@@ -246,6 +220,7 @@ func encodeWriteRequestIntoProtoAndSnappy(writeRequest *prompb.WriteRequest) *by
 
 	encoded := snappy.Encode(nil, data)
 	body := bytes.NewReader(encoded)
+
 	return body
 }
 
@@ -254,19 +229,23 @@ func sendRequest(url string, bodyBytes []byte) error {
 	if err != nil {
 		return err
 	}
+
 	var netClient = &http.Client{Timeout: time.Second * 5}
 	resp, err := netClient.Do(req)
 	if err != nil {
 		return err
 	}
+
 	if resp.StatusCode >= 400 {
 		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		bodyString := string(bodyBytes)
 		return fmt.Errorf("Error: statuscode %d sending data to endpoint: %s, %s", resp.StatusCode, url, bodyString)
 	}
+
 	return nil
 }
 
@@ -274,14 +253,17 @@ func sendRequestToAPS(body *bytes.Reader) error {
 	bodyBytes, _ := io.ReadAll(body)
 	var errors []string
 	endpoints := strings.Split(os.Getenv("PROMETHEUS_REMOTE_WRITE_URLS"), ",")
+
 	for _, url := range endpoints {
 		err := sendRequest(url, bodyBytes)
 		if err != nil {
 			errors = append(errors, err.Error())
 		}
 	}
+
 	if len(errors) > 0 {
 		return fmt.Errorf(strings.Join(errors, ","))
 	}
+
 	return nil
 }
