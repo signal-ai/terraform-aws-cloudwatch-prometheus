@@ -234,14 +234,17 @@ func handleRequest(ctx context.Context, evnt events.KinesisFirehoseEvent) (event
 	for _, record := range evnt.Records {
 		splitRecord := strings.Split(string(record.Data), "\n")
 
-		for _, x := range splitRecord {
+		for _, recordStr := range splitRecord {
 			// The Records includes an empty new line at the last position which becomes "" after parsing. Skipping over the empty string.
-			if x == "" {
+			if recordStr == "" {
 				continue
 			}
 
 			var metricStreamData MetricStreamData
-			json.Unmarshal([]byte(x), &metricStreamData)
+			if err := json.Unmarshal([]byte(recordStr), &metricStreamData); err != nil {
+				log.Printf("WARN: Failed parsing record %s", recordStr)
+				continue
+			}
 
 			// For each metric, the labels + valuetype is the __name__ of the sample, and the corresponding single sample value is used to create the timeseries.
 			for _, value := range values {
