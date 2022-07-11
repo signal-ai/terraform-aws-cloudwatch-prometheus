@@ -225,13 +225,13 @@ func sendRequestToAPS(body *bytes.Reader) error {
 	return nil
 }
 
-func handleRequest(ctx context.Context, evnt events.KinesisFirehoseEvent) (events.KinesisFirehoseResponse, error) {
+func timeSeriesFrom(records []events.KinesisFirehoseEventRecord) (events.KinesisFirehoseResponse, []*prompb.TimeSeries) {
 	var response events.KinesisFirehoseResponse
 	var timeSeries []*prompb.TimeSeries
 	// These are the 4 value types from Cloudwatch, each of which map to a Prometheus Gauge
 	values := []ValueType{Count, Max, Min, Sum}
 
-	for _, record := range evnt.Records {
+	for _, record := range records {
 		splitRecord := strings.Split(string(record.Data), "\n")
 
 		for _, recordStr := range splitRecord {
@@ -270,6 +270,12 @@ func handleRequest(ctx context.Context, evnt events.KinesisFirehoseEvent) (event
 
 		response.Records = append(response.Records, transformedRecord)
 	}
+
+	return response, timeSeries
+}
+
+func handleRequest(ctx context.Context, evnt events.KinesisFirehoseEvent) (events.KinesisFirehoseResponse, error) {
+	response, timeSeries := timeSeriesFrom(evnt.Records)
 
 	return response, createWriteRequestAndSendToAPS(timeSeries)
 }
