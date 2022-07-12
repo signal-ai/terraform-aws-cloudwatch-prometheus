@@ -1,0 +1,12 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: cimg/go:1.18.3
+
+    steps:
+      - checkout
+      - run:
+          name: Run tests
+          command: go test
