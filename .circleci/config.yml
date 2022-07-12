@@ -9,7 +9,7 @@ jobs:
       - checkout
       - run:
           name: Run tests
-          working_direectory: lambda_code
+          working_directory: lambda_code
           command: go test
 
 
