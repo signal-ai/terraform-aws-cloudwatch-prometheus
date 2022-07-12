@@ -82,37 +82,6 @@ func toSnakeCase(str string) string {
 	return strings.ToLower(snake)
 }
 
-func handleAddLabels(valueType ValueType, metricName string, namespace string, dimensions Dimensions, region string, account string) []*prompb.Label {
-	var labels []*prompb.Label
-
-	metricNameLabels := createMetricNameLabels(metricName, namespace, valueType, region, account)
-	dimensionLabels := createDimensionLabels(dimensions)
-	labels = append(labels, dimensionLabels...)
-	labels = append(labels, metricNameLabels...)
-
-	return labels
-}
-
-func handleAddSamples(valueType ValueType, value Value, timestamp int64) prompb.Sample {
-	var val float64
-
-	switch valueType {
-	case Count:
-		val = value.Count
-	case Min:
-		val = value.Min
-	case Max:
-		val = value.Max
-	case Sum:
-		val = value.Sum
-	}
-
-	return prompb.Sample{
-		Value:     val,
-		Timestamp: timestamp,
-	}
-}
-
 func createMetricNameLabels(metricName string, namespace string, valueType ValueType, region string, account string) []*prompb.Label {
 	var labels []*prompb.Label
 
@@ -155,6 +124,37 @@ func createDimensionLabels(dimensions Dimensions) []*prompb.Label {
 	}
 
 	return labels
+}
+
+func handleAddLabels(valueType ValueType, metricName string, namespace string, dimensions Dimensions, region string, account string) []*prompb.Label {
+	var labels []*prompb.Label
+
+	metricNameLabels := createMetricNameLabels(metricName, namespace, valueType, region, account)
+	dimensionLabels := createDimensionLabels(dimensions)
+	labels = append(labels, dimensionLabels...)
+	labels = append(labels, metricNameLabels...)
+
+	return labels
+}
+
+func handleAddSamples(valueType ValueType, value Value, timestamp int64) prompb.Sample {
+	var val float64
+
+	switch valueType {
+	case Count:
+		val = value.Count
+	case Min:
+		val = value.Min
+	case Max:
+		val = value.Max
+	case Sum:
+		val = value.Sum
+	}
+
+	return prompb.Sample{
+		Value:     val,
+		Timestamp: timestamp,
+	}
 }
 
 func createWriteRequestAndSendToAPS(timeseries []*prompb.TimeSeries) error {
