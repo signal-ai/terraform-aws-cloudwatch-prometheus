@@ -14,7 +14,7 @@ This is a terraform module that does the same thing but connects to one of your 
 
 ## Features
 
-- Lighting fast, efficient metrics that you want directly in prometheus.
+- Blazingly fast, efficient metrics that you want directly in prometheus.
 - Standardized prometheus  `__naming__` in `snake_case`
 - Currently supporting `lambda` and `sqs` (More coming soon)
 

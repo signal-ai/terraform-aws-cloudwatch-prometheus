@@ -103,3 +103,47 @@ func TestCreateDimensionLabels(t *testing.T) {
 		t.Errorf("Output %v not as expected %v", output, expected)
 	}
 }
+
+func TestHandleAddLabels(t *testing.T) {
+	dimensions := map[string]string{
+		"foo": "bar",
+		"baz": "qux",
+	}
+	output := handleAddLabels("count", "foo", "bar", dimensions, "eu-west-1", "dev")
+	expected := []*prompb.Label{
+		{
+			Name:  "foo",
+			Value: "bar",
+		},
+		{
+			Name:  "baz",
+			Value: "qux",
+		},
+		{
+			Name:  "__name__",
+			Value: "aws_custom_bar_foo_count",
+		},
+		{
+			Name:  "region",
+			Value: "eu-west-1",
+		}, {
+			Name:  "account",
+			Value: "dev",
+		}}
+
+	if !reflect.DeepEqual(expected, output) {
+		t.Errorf("Output %v not as expected %v", output, expected)
+	}
+}
+
+func TestHandleAddSample(t *testing.T) {
+	output := handleAddSamples("count", Value{Count: 42}, 1234)
+	expected := prompb.Sample{
+		Value:     42,
+		Timestamp: 1234,
+	}
+
+	if !reflect.DeepEqual(expected, output) {
+		t.Errorf("Output %v not as expected %v", output, expected)
+	}
+}
