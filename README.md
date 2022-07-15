@@ -1,6 +1,6 @@
 # terraform-aws-cloudwatch-prometheus
 
-[![CircleCI](https://circleci.com/gh/signal-ai/terraform-aws-cloudwatch-prometheus.svg?style=shield&circle-token=91443f17e09f183c3b4e2921a29dd61ae99c13d8)](https://circleci.com/gh/signal-ai/terraform-aws-cloudwatch-prometheus)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/signal-ai/terraform-aws-cloudwatch-prometheus/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/signal-ai/terraform-aws-cloudwatch-prometheus/tree/main)
 
 Are you fed up with the costs, faf and effort of maintaining cloudwatch exporters to get metrics into your prometheus setup?
 Maybe you are using one of the following:

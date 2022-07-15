@@ -12,7 +12,6 @@ jobs:
           working_directory: lambda_code
           command: go test
 
-
 workflows:
   test:
     jobs:
