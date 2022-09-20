@@ -63,6 +63,7 @@ This is a terraform module that does the same thing but connects to one of your 
 | <a name="input_included_aws_namespaces"></a> [included\_aws\_namespaces](#input\_included\_aws\_namespaces) | The list of AWS Namespaces to include in the stream | `list(string)` | n/a | yes |
 | <a name="input_prometheus_endpoints"></a> [prometheus\_endpoints](#input\_prometheus\_endpoints) | A list of prometheus remote write endpoints to write metrics | `list(string)` | n/a | yes |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | The subnet ids the create the lambda in (these should have network access to the prometheus remote write endpoints) | `list(string)` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | The standard tags to apply to every AWS resource. | `map(string)` | `{}` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The VPC to create the lambda in (this should have network access to the prometheusremote write endpoints) | `string` | n/a | yes |
 <!-- END_TF_DOCS -->
 

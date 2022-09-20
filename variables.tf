@@ -37,3 +37,10 @@ variable "prometheus_endpoints" {
   type        = list(string)
   description = "A list of prometheus remote write endpoints to write metrics"
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "The standard tags to apply to every AWS resource."
+
+  default = {}
+}

@@ -12,6 +12,8 @@ resource "aws_cloudwatch_metric_stream" "main" {
       namespace = include_filter.value
     }
   }
+
+  tags = var.tags
 }
 
 resource "aws_iam_role" "metric_stream_to_firehose" {
@@ -32,6 +34,8 @@ resource "aws_iam_role" "metric_stream_to_firehose" {
   ]
 }
 EOF
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy" "metric_stream_to_firehose" {

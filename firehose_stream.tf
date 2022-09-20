@@ -1,5 +1,7 @@
 resource "aws_s3_bucket" "cloudwatch_metrics_firehose_bucket" {
-  bucket = "${var.aws_firehose_s3_bucket_name}"
+  bucket = var.aws_firehose_s3_bucket_name
+
+  tags = var.tags
 }
 
 resource "aws_s3_bucket_acl" "cloudwatch_metrics_firehose_bucket_acl" {
@@ -29,6 +31,8 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_metrics_firehose_del
       }
     }
   }
+
+  tags = var.tags
 }
 
 resource "aws_iam_role" "cloudwatch_metrics_firehose_role" {
@@ -57,6 +61,8 @@ resource "aws_iam_role" "cloudwatch_metrics_firehose_role" {
   ]
 }
 EOF
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy" "cloudwatch_metrics_s3_policy" {
@@ -109,9 +115,3 @@ resource "aws_iam_role_policy" "cloudwatch_metrics_firehose_lambda_policy" {
 }
 EOF
 }
-
-
-
-
-
-

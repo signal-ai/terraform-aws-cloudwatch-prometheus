@@ -20,11 +20,15 @@ resource "aws_lambda_function" "cloudwatch_metrics_firehose_prometheus_remote_wr
       PROMETHEUS_REMOTE_WRITE_URLS = join(",", var.prometheus_endpoints)
     }
   }
+
+  tags = var.tags
 }
 
 resource "aws_security_group" "cloudwatch_metrics_firehose_prometheus_remote_write" {
   name   = "${var.aws_firehose_lambda_name}-security-group"
   vpc_id = var.vpc_id
+
+  tags = var.tags
 }
 
 resource "aws_security_group_rule" "cloudwatch_metrics_firehose_prometheus_remote_write" {
@@ -55,14 +59,20 @@ resource "aws_iam_role" "iam_for_lambda" {
   ]
 }
 EOF
+
+  tags = var.tags
 }
 
 data "aws_iam_policy" "lambda_basic_execution_role_policy_vpc" {
   arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+
+  tags = var.tags
 }
 
 data "aws_iam_policy" "lambda_basic_execution_role_policy" {
   arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "vpc" {
@@ -79,4 +89,6 @@ resource "aws_iam_role_policy_attachment" "execution" {
 resource "aws_cloudwatch_log_group" "logs" {
   name              = "/aws/lambda/${aws_lambda_function.cloudwatch_metrics_firehose_prometheus_remote_write.function_name}"
   retention_in_days = 30
+
+  tags = var.tags
 }
