@@ -11,11 +11,13 @@ variable "subnet_ids" {
 variable "included_aws_namespaces" {
   type        = list(string)
   description = "The list of AWS Namespaces to include in the stream. All metrics from this namespace will be collected via the firehose"
+  default = []
 }
 
 variable "included_aws_namespace_metrics" {
   type        = map(list(string))
   description = "The list of AWS Namespaces and specific metrics from these Namespaces to include in the stream. Only the specified metrics will be collected via the firehose"
+  default = {}
 }
 
 variable "aws_cloudwatch_metric_stream_name" {
