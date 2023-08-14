@@ -6,11 +6,16 @@ variable "vpc_id" {
 variable "subnet_ids" {
   type        = list(string)
   description = "The subnet ids the create the lambda in (these should have network access to the prometheus remote write endpoints)"
-
 }
+
 variable "included_aws_namespaces" {
   type        = list(string)
-  description = "The list of AWS Namespaces to include in the stream"
+  description = "The list of AWS Namespaces to include in the stream. All metrics from this namespace will be collected via the firehose"
+}
+
+variable "included_aws_namespace_metrics" {
+  type        = map(list(string))
+  description = "The list of AWS Namespaces and specific metrics from these Namespaces to include in the stream. Only the specified metrics will be collected via the firehose"
 }
 
 variable "aws_cloudwatch_metric_stream_name" {
