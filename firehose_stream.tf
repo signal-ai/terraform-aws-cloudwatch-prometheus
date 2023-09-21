@@ -7,8 +7,18 @@ resource "aws_s3_bucket" "cloudwatch_metrics_firehose_bucket" {
 resource "aws_s3_bucket_acl" "cloudwatch_metrics_firehose_bucket_acl" {
   bucket = aws_s3_bucket.cloudwatch_metrics_firehose_bucket.id
   acl    = "private"
+  depends_on = [
+    aws_s3_bucket_ownership_controls.bucket_ownership_cloudwatch_firehose
+  ]
 }
 
+resource "aws_s3_bucket_ownership_controls" "bucket_ownership_cloudwatch_firehose" {
+  bucket = aws_s3_bucket.cloudwatch_metrics_firehose_bucket.arn
+
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
 
 resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_metrics_firehose_delivery_stream" {
   name        = var.aws_firehose_stream_name
