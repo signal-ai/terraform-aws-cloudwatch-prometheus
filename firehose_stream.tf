@@ -13,7 +13,7 @@ resource "aws_s3_bucket_acl" "cloudwatch_metrics_firehose_bucket_acl" {
 }
 
 resource "aws_s3_bucket_ownership_controls" "bucket_ownership_cloudwatch_firehose" {
-  bucket = aws_s3_bucket.cloudwatch_metrics_firehose_bucket.arn
+  bucket = aws_s3_bucket.cloudwatch_metrics_firehose_bucket.id
 
   rule {
     object_ownership = "ObjectWriter"
