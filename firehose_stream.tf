@@ -42,6 +42,10 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_metrics_firehose_del
           parameter_name  = "BufferSizeInMBs"
           parameter_value = "1"
         }
+        parameters {
+          parameter_name  = "BufferIntervalInSeconds"
+          parameter_value = "300"
+        }
       }
     }
   }
