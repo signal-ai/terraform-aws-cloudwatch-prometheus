@@ -3,6 +3,7 @@ resource "aws_cloudwatch_metric_stream" "main" {
   name          = var.aws_cloudwatch_metric_stream_name
   role_arn      = aws_iam_role.metric_stream_to_firehose.arn
   firehose_arn  = aws_kinesis_firehose_delivery_stream.cloudwatch_metrics_firehose_delivery_stream.arn
+  include_linked_accounts_metrics = var.include_linked_accounts_metrics
   output_format = "json"
 
 

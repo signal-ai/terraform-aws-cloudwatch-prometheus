@@ -44,3 +44,9 @@ variable "tags" {
 
   default = {}
 }
+
+variable "include_linked_accounts_metrics" {
+  type = bool
+  description = "Enable cross-account metrics? Useful if configured on monitoring account."
+  default = false
+}
