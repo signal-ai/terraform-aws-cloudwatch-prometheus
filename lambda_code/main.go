@@ -258,10 +258,6 @@ func timeSeriesFrom(records []events.KinesisFirehoseEventRecord) (events.Kinesis
 					Samples: samples,
 				}
 
-				if metricStreamData.MetricName == "ConsumedWriteCapacityUnits" {
-					fmt.Println(metricStreamData)
-				}
-
 				timeSeries = append(timeSeries, singleTimeSeries)
 			}
 		}
