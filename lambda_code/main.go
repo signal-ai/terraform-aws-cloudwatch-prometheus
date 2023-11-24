@@ -276,8 +276,12 @@ func timeSeriesFrom(records []events.KinesisFirehoseEventRecord) (events.Kinesis
 
 func handleRequest(ctx context.Context, evnt events.KinesisFirehoseEvent) (events.KinesisFirehoseResponse, error) {
 	response, timeSeries := timeSeriesFrom(evnt.Records)
-
-	return response, createWriteRequestAndSendToAPS(timeSeries)
+	err := createWriteRequestAndSendToAPS(timeSeries)
+	if err != nil {
+		topError := fmt.Errorf("event %v has error: %s", evnt, err.Error())
+		return response, topError
+	}
+	return response, nil
 }
 
 func main() {
