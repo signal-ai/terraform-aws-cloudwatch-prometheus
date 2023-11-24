@@ -278,7 +278,7 @@ func handleRequest(ctx context.Context, evnt events.KinesisFirehoseEvent) (event
 	response, timeSeries := timeSeriesFrom(evnt.Records)
 	err := createWriteRequestAndSendToAPS(timeSeries)
 	if err != nil {
-		topError := fmt.Errorf("event %v has error: %s", evnt, err.Error())
+		topError := fmt.Errorf("event %v has error: %s", response, err.Error())
 		return response, topError
 	}
 	return response, nil
