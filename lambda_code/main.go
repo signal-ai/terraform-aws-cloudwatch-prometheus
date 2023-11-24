@@ -258,6 +258,10 @@ func timeSeriesFrom(records []events.KinesisFirehoseEventRecord) (events.Kinesis
 					Samples: samples,
 				}
 
+				if metricStreamData.MetricStreamName == "ConsumedWriteCapacityUnits" {
+					fmt.Println(metricStreamData)
+				}
+
 				timeSeries = append(timeSeries, singleTimeSeries)
 			}
 		}
@@ -276,12 +280,8 @@ func timeSeriesFrom(records []events.KinesisFirehoseEventRecord) (events.Kinesis
 
 func handleRequest(ctx context.Context, evnt events.KinesisFirehoseEvent) (events.KinesisFirehoseResponse, error) {
 	response, timeSeries := timeSeriesFrom(evnt.Records)
-	err := createWriteRequestAndSendToAPS(timeSeries)
-	if err != nil {
-		topError := fmt.Errorf("event %v has error: %s", timeSeries, err.Error())
-		return response, topError
-	}
-	return response, nil
+
+	return response, createWriteRequestAndSendToAPS(timeSeries)
 }
 
 func main() {
