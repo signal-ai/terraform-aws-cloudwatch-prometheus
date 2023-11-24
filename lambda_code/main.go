@@ -258,7 +258,7 @@ func timeSeriesFrom(records []events.KinesisFirehoseEventRecord) (events.Kinesis
 					Samples: samples,
 				}
 
-				if metricStreamData.MetricStreamName == "ConsumedWriteCapacityUnits" {
+				if metricStreamData.Namespace == "AWS/DynamoDB" {
 					fmt.Println(metricStreamData)
 				}
 
