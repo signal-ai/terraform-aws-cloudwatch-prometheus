@@ -8,10 +8,6 @@ variable "subnet_ids" {
   description = "The subnet ids the create the lambda in (these should have network access to the prometheus remote write endpoints)"
 
 }
-variable "included_aws_namespaces" {
-  type        = list(string)
-  description = "The list of AWS Namespaces to include in the stream"
-}
 
 variable "aws_cloudwatch_metric_stream_name" {
   type        = string
@@ -49,4 +45,12 @@ variable "include_linked_accounts_metrics" {
   type = bool
   description = "Enable cross-account metrics? Useful if configured on monitoring account."
   default = false
+}
+
+variable "included_filters" {
+  type = list(object({
+    namespace = string
+    metric_names = list(string)
+  }))
+  description = "The list of included filters to include in the stream"
 }

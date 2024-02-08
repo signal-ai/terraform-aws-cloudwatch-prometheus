@@ -8,9 +8,10 @@ resource "aws_cloudwatch_metric_stream" "main" {
 
 
   dynamic "include_filter" {
-    for_each = var.included_aws_namespaces
+    for_each = var.included_filters
     content {
-      namespace = include_filter.value
+      namespace = include_filter.value["namespace"]
+      metric_names = include_filter.value["metric_names"]
     }
   }
 
