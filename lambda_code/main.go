@@ -73,8 +73,8 @@ func sanitize(text string) string {
 }
 
 func toSnakeCase(str string) string {
-	var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
-	var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+	matchFirstCap := regexp.MustCompile("(.)([A-Z][a-z]+)")
+	matchAllCap := regexp.MustCompile("([a-z0-9])([A-Z])")
 
 	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
 	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
@@ -162,6 +162,7 @@ func createWriteRequestAndSendToAPS(timeseries []*prompb.TimeSeries) error {
 		Timeseries: timeseries,
 	}
 
+	log.Printf("Raw TimeSeries: %v", writeRequest)
 	body := encodeWriteRequestIntoProtoAndSnappy(writeRequest)
 	err := sendRequestToAPS(body)
 
@@ -170,7 +171,6 @@ func createWriteRequestAndSendToAPS(timeseries []*prompb.TimeSeries) error {
 
 func encodeWriteRequestIntoProtoAndSnappy(writeRequest *prompb.WriteRequest) *bytes.Reader {
 	data, err := proto.Marshal(writeRequest)
-
 	if err != nil {
 		panic(err)
 	}
@@ -186,7 +186,7 @@ func sendRequest(url string, bodyBytes []byte) error {
 		return err
 	}
 
-	var netClient = &http.Client{Timeout: time.Second * 5}
+	netClient := &http.Client{Timeout: time.Second * 5}
 	resp, err := netClient.Do(req)
 	if err != nil {
 		return err
@@ -219,7 +219,6 @@ func sendRequestToAPS(body *bytes.Reader) error {
 	}
 
 	if len(errors) > 0 {
-		log.Printf("DBG Metric Body: %s",string(bodyBytes))
 		return fmt.Errorf(strings.Join(errors, ","))
 	}
 
