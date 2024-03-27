@@ -7,7 +7,7 @@ resource "aws_lambda_function" "cloudwatch_metrics_firehose_prometheus_remote_wr
   timeout          = 60
   memory_size      = 256
 
-  runtime = "go1.x"
+  runtime = "provided.al2023"
 
   vpc_config {
     subnet_ids = var.subnet_ids

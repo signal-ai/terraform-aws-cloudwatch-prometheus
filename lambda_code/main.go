@@ -219,6 +219,7 @@ func sendRequestToAPS(body *bytes.Reader) error {
 	}
 
 	if len(errors) > 0 {
+		log.Printf("DBG Metric Body: %s",string(bodyBytes))
 		return fmt.Errorf(strings.Join(errors, ","))
 	}
 
