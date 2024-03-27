@@ -162,7 +162,6 @@ func createWriteRequestAndSendToAPS(timeseries []*prompb.TimeSeries) error {
 		Timeseries: timeseries,
 	}
 
-	log.Printf("Raw TimeSeries: %v", writeRequest)
 	body := encodeWriteRequestIntoProtoAndSnappy(writeRequest)
 	err := sendRequestToAPS(body)
 
