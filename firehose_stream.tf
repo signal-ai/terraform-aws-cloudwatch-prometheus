@@ -12,6 +12,17 @@ resource "aws_s3_bucket_acl" "cloudwatch_metrics_firehose_bucket_acl" {
   ]
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "cloudwatch_metrics_firehose_remove_after_10_days" {
+  bucket = aws_s3_bucket.cloudwatch_metrics_firehose_bucket.id
+  rule {
+    status = "Enabled"
+    id     = "remove_older_than_10_days"
+    expiration {
+      days = 10
+    }
+  }
+}
+
 resource "aws_s3_bucket_ownership_controls" "bucket_ownership_cloudwatch_firehose" {
   bucket = aws_s3_bucket.cloudwatch_metrics_firehose_bucket.id
 
