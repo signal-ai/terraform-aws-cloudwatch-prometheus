@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"cmp"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"slices"
 	"strings"
 	"time"
 
@@ -19,6 +21,10 @@ import (
 	"github.com/golang/snappy"
 	"github.com/prometheus/prometheus/prompb"
 )
+
+func sortLabelsFunc(a, b *prompb.Label) int {
+	return cmp.Compare(strings.ToLower(a.Name), strings.ToLower(b.Name))
+}
 
 type Dimensions = map[string]string
 
@@ -104,6 +110,7 @@ func createMetricNameLabels(metricName string, namespace string, valueType Value
 		Value: sanitize(account),
 	}
 	labels = append(labels, accountLabel)
+	slices.SortFunc(labels, sortLabelsFunc)
 
 	return labels
 }
@@ -122,7 +129,7 @@ func createDimensionLabels(dimensions Dimensions) []*prompb.Label {
 			labels = append(labels, dimensionLabel)
 		}
 	}
-
+	slices.SortFunc(labels, sortLabelsFunc)
 	return labels
 }
 
@@ -134,6 +141,7 @@ func handleAddLabels(valueType ValueType, metricName string, namespace string, d
 	labels = append(labels, dimensionLabels...)
 	labels = append(labels, metricNameLabels...)
 
+	slices.SortFunc(labels, sortLabelsFunc)
 	return labels
 }
 

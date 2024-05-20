@@ -1,10 +1,7 @@
 package main
 
 import (
-	"cmp"
 	"reflect"
-	"slices"
-	"strings"
 	"testing"
 
 	"github.com/prometheus/prometheus/prompb"
@@ -24,10 +21,6 @@ var sanitizeTests = []sanitizeTest{
 	{"/\\/:@<>“", "________"},
 	{"“", "_"},
 	{"prometheus metric count % is: 200", "prometheus_metric_count__percent_is__200"},
-}
-
-func sortLabelsFunc(a, b *prompb.Label) int {
-	return cmp.Compare(strings.ToLower(a.Name), strings.ToLower(b.Name))
 }
 
 func TestSanitize(t *testing.T) {
@@ -55,12 +48,12 @@ func TestCreateMetricNameLabels(t *testing.T) {
 			Value: "aws_custom_bar_foo_count",
 		},
 		{
-			Name:  "region",
-			Value: "eu-west-1",
-		},
-		{
 			Name:  "account",
 			Value: "dev",
+		},
+		{
+			Name:  "region",
+			Value: "eu-west-1",
 		},
 	}
 
@@ -75,12 +68,12 @@ func TestCreateMetricNameLabels(t *testing.T) {
 			Value: "aws_bar_foo_count",
 		},
 		{
-			Name:  "region",
-			Value: "eu-west-1",
-		},
-		{
 			Name:  "account",
 			Value: "dev",
+		},
+		{
+			Name:  "region",
+			Value: "eu-west-1",
 		},
 	}
 
@@ -97,18 +90,14 @@ func TestCreateDimensionLabels(t *testing.T) {
 	})
 	expected := []*prompb.Label{
 		{
-			Name:  "foo",
-			Value: "bar",
-		},
-		{
 			Name:  "baz",
 			Value: "qux",
 		},
+		{
+			Name:  "foo",
+			Value: "bar",
+		},
 	}
-
-	slices.SortFunc(expected, sortLabelsFunc)
-
-	slices.SortFunc(output, sortLabelsFunc)
 
 	if !reflect.DeepEqual(expected, output) {
 		t.Errorf("Output %v not as expected %v", output, expected)
@@ -123,30 +112,26 @@ func TestHandleAddLabels(t *testing.T) {
 	output := handleAddLabels("count", "foo", "bar", dimensions, "eu-west-1", "dev")
 	expected := []*prompb.Label{
 		{
-			Name:  "foo",
-			Value: "bar",
+			Name:  "__name__",
+			Value: "aws_custom_bar_foo_count",
+		},
+		{
+			Name:  "account",
+			Value: "dev",
 		},
 		{
 			Name:  "baz",
 			Value: "qux",
 		},
 		{
-			Name:  "__name__",
-			Value: "aws_custom_bar_foo_count",
+			Name:  "foo",
+			Value: "bar",
 		},
 		{
 			Name:  "region",
 			Value: "eu-west-1",
 		},
-		{
-			Name:  "account",
-			Value: "dev",
-		},
 	}
-
-	slices.SortFunc(expected, sortLabelsFunc)
-
-	slices.SortFunc(output, sortLabelsFunc)
 
 	if !reflect.DeepEqual(expected, output) {
 		t.Errorf("Output %v not as expected %v", output, expected)
